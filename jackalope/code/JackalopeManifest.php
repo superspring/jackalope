@@ -7,11 +7,8 @@ class JackalopeManifest extends SS_ClassManifest {
 	// @todo This is missing many fields, add them.
 	const GENERICCLASS_CODE = <<<'EOF'
 class %s extends DataObject {
-	static $db = array();
-	static $has_one = array();
-	static $has_many = array();
-	static $allowed_children = array();
-	static $belongs_many_many = array();
+	// This is used to distinguish between real classes and virtual classes.
+	public $JACKALOPEVIRTUALCLASS = true;
 }
 EOF;
 
@@ -25,6 +22,7 @@ EOF;
 		$loader->pushManifest($this);
 
 		parent::__construct($base, $includeTests, $forceRegen, $cache);
+		$this->regenerate();
 	}
 
 	/**
@@ -103,23 +101,44 @@ EOF;
 			$createdclasses = array();
 		}
 
-		// For each new class, create it.
+		// For each new class, create it and add the datas.
 		foreach ($classes as $class => $definition) {
-			if (!array_key_exists($class, $createdclasses)) {
+			// A new class? Create it.
+			if (!array_key_exists($class, $createdclasses) && !class_exists($class)) {
 				// Define the class.
 				$createcode = sprintf(self::GENERICCLASS_CODE, $class);
 				// @todo Find another way of achieving this.
 				eval($createcode);
-
-				// Add data to the class.
-				foreach ($definition as $var_name => $var_value) {
-					$class::$$var_name = $var_value;
-				}
 				// Remember it's been created.
 				$createdclasses[$class] = true;
+			}
+
+			// Add data to the class.
+			$classref = new ReflectionClass($class);
+			foreach ($definition as $var_name => $var_value) {
+				$fields = $classref->getStaticPropertyValue($var_name);
+				if (!is_array($fields)) {
+					$fields = array();
+				}
+				$classref->setStaticPropertyValue($var_name, $this->mergeField($fields, $var_value));
 			}
 		}
 
 		return array_keys($classes);
+	}
+
+	/**
+	 * Adds new fields to the existing objects.
+	 *
+	 * @param array $original
+	 *   What is currently in the class.
+	 * @param array $additions
+	 *   New fields to add to the class.
+	 *
+	 * @return
+	 *   The union of these two sets with the bias to the additions.
+	 */
+	protected function mergeField($original, $additions) {
+		return array_merge($original, $additions);
 	}
 }
