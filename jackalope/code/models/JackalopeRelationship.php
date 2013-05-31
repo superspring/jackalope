@@ -91,6 +91,23 @@ class JackalopeRelationship extends DataObject {
 	}
 
 	public function getPopupFields() {
-		return new FieldList();
+		// List of options.
+		$list = array(
+			'many_many', 'belongs_many_many', 'searchable_fields', 'summary_fields', 'has_one', 'belongs_to', 'defaults', 'has_many',
+		);
+		$list = array_combine($list, $list);
+
+		// Type may be one of it's values.
+		$type = new DropdownField('Type', 'Field Type', $list);
+
+		// FieldName and FieldType may be anything.
+		$fname = new TextField('FieldName', 'Database Field Name');
+		$ftype = new TextField('FieldType', 'Database Field Relationship');
+		$fargs = new TextField('FieldArgs', 'Any arguments to this relationship?');
+
+		$fields = new FieldList(array(
+			$type, $fname, $ftype, $fargs
+		));
+		return $fields;
 	}
 }

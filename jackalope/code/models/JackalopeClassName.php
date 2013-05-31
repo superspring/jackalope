@@ -27,6 +27,7 @@ class JackalopeClassName extends DataObject {
 		$fields->removeByName('Fields');
 		$fields->removeByName('Relationships');
 
+		// List options for this class.
 		foreach (array(
 			// Add the generic DB fields.
 			'Fields' => 'JackalopeDBField',
@@ -34,7 +35,6 @@ class JackalopeClassName extends DataObject {
 			'Relationships' => 'JackalopeRelationship',
 		) as $field => $class) {
 			$field = new ComplexTableField($this, $field, $class, array(), 'getPopupFields');
-			$field->setParentClass($class);
 			$fields->addFieldToTab('Root.Main', $field);
 		}
 

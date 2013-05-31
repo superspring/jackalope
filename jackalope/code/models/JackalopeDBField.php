@@ -119,6 +119,20 @@ class JackalopeDBField extends DataObject {
 	}
 
 	public function getPopupFields() {
-		return new FieldList();
+		// List of options.
+		$list = array(
+			'Boolean', 'Currency', 'Date', 'Decimal', 'Enum', 'HTMLText', 'HTMLVarchar', 'Int', 'Percentage', 'SS_Datetime', 'Text', 'Time', 'Varchar',
+		);
+		$list = array_combine($list, $list);
+
+		// FieldName and FieldType may be anything.
+		$fname = new TextField('FieldName', 'Database Field Name');
+		$ftype = new DropdownField('FieldType', 'Field Type', $list);
+		$fargs = new TextField('FieldArgs', 'Arguments to the relationship');
+
+		$fields = new FieldList(
+			$fname, $ftype, $fargs
+		);
+		return $fields;
 	}
 }
