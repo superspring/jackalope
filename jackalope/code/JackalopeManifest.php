@@ -37,9 +37,11 @@ EOF;
 			$classlower = strtolower($class);
 
 			// Add to internal set.
-			$this->classes[$classlower] = self::DATABSECLASSMODEL_PATH;
-			$this->children['dataobject'][] = $class;
-			$this->descendants['dataobject'][] = $class;
+			if (!array_key_exists($classlower, $this->classes)) {
+				$this->classes[$classlower] = self::DATABSECLASSMODEL_PATH;
+				$this->children['dataobject'][] = $class;
+				$this->descendants['dataobject'][] = $class;
+			}
 		}
 
 		// Store the cache again.

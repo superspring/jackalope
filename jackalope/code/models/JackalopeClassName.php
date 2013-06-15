@@ -16,6 +16,12 @@ class JackalopeClassName extends DataObject {
 			'filter' => 'PartialMatchFilter',
 		),
 	);
+	static $indexes = array(
+		'NameIdx' => array(
+			'type'  => 'unique',
+			'value' => 'Name',
+		),
+	);
 
 	/**
 	 * Modify the configuration options to combine relationships with classes.
