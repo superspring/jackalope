@@ -46,4 +46,11 @@ class JackalopeClassName extends DataObject {
 
 		return $fields;
 	}
+
+	/**
+	 * After any class changes, update the database.
+	 */
+	public function onAfterWrite() {
+		JackalopeController::rebuild();
+	}
 }

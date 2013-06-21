@@ -110,4 +110,11 @@ class JackalopeRelationship extends DataObject {
 		));
 		return $fields;
 	}
+
+	/**
+	 * Updates the class models with the new field.
+	 */
+	public function onAfterWrite() {
+		JackalopeController::rebuild();
+	}
 }

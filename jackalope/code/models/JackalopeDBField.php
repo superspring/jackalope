@@ -135,4 +135,11 @@ class JackalopeDBField extends DataObject {
 		);
 		return $fields;
 	}
+
+	/**
+	 * Ensure that after a field is created it is updated immediately.
+	 */
+	public function onAfterWrite() {
+		JackalopeController::rebuild();
+	}
 }

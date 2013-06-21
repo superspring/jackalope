@@ -75,8 +75,10 @@ EOF;
 
 				// Add all the fields.
 				foreach ($class->Fields() as $field) {
-					$results[$class->Name]['db'][$field->FieldName] = $field->FieldType;
+					$value = $field->FieldArgs ? $field->FieldType . '(' . $field->FieldArgs . ')' : $field->FieldType;
+					$results[$class->Name]['db'][$field->FieldName] = $value;
 				}
+
 				// Add all the relationships.
 				foreach ($class->Relationships() as $relationship) {
 					if (!array_key_exists($relationship->Type, $results[$class->Name])) {

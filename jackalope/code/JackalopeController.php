@@ -12,4 +12,13 @@ class JackalopeController extends RequestProcessor {
 		// Use a new Manifest class.
 		$manifest = new JackalopeManifest(BASE_PATH, false, $flush);
 	}
+
+	/**
+	 * Gets the database to rebuild itself.
+	 */
+	public static function rebuild() {
+		DataObject::reset();
+		SS_ClassLoader::instance()->getManifest()->regenerate();
+		singleton('DatabaseAdmin')->doBuild(TRUE, FALSE, FALSE);
+	}
 }
