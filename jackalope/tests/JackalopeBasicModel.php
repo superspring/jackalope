@@ -3,7 +3,7 @@
  * @file
  * This test generates a basic model and tests it's attributes.
  */
-class BasicModelTest extends SapphireTest {
+class JackalopeBasicModel extends SapphireTest {
 	protected static $className = 'BasicModelTestClass';
 	protected static $fieldNames = array(
 		// Name => array(Type, Args).
@@ -38,7 +38,6 @@ class BasicModelTest extends SapphireTest {
 	 * Helper method to: Tell SapphireTest to use Jackalope's manifest.
 	 */
 	protected function helperUseManifest() {
-var_dump('called manifest');
 		// Create a new instance of the manifest.
 		global $flush;
 		$manifest = new JackalopeManifest(BASE_PATH, false, $flush);
