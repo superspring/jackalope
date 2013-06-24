@@ -23,6 +23,9 @@ class JackalopeClassName extends DataObject {
 		),
 	);
 
+	const JACKALOPEERROR_DUPLICATE_NAME = 5;
+	const JACKALOPEERROR_BAD_NAME = 6;
+
 	/**
 	 * Modify the configuration options to combine relationships with classes.
 	 */
@@ -68,5 +71,29 @@ class JackalopeClassName extends DataObject {
 
 		// Delete the table as a whole.
 		JackalopeController::deleteTable($this);
+	}
+
+	/**
+	 * Ensure that this Jackalope class does not already exist.
+	 */
+	protected function validate() {
+		$validator = parent::validate();
+
+		// @todo Add translations.
+		$other = JackalopeClassName::get('JackalopeClassName', sprintf(
+			"Name = '%s'", Convert::raw2sql($this->Name)
+		));
+		if ($other->count() !== 0) {
+			// There are other ones? No.
+			$validator->error('There is already a class with this name', self::JACKALOPEERROR_DUPLICATE_NAME);
+		}
+
+		// Ensure the characters are valid.
+		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $this->Name)) {
+			// Invalid PHP class name.
+			$validator->error('Class name may only contain alphanumeric characters and underscores', self::JACKALOPEERROR_BAD_NAME);
+		}
+
+		return $validator;
 	}
 }

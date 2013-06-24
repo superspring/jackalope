@@ -20,7 +20,9 @@ class JackalopeRelationship extends DataObject {
 	/**
 	 * A list of potential validation errors.
 	 */
-	const JACKALOPEERROR_RELATIONSHIP_MISSINGNAME = 1;
+	const JACKALOPEERROR_RELATIONSHIP_MISSINGNAME = 6;
+	const JACKALOPEERROR_RELATIONSHIP_MISSINGTYPE = 7;
+	const JACKALOPEERROR_RELATIONSHIP_MISSINGFIELD = 8;
 
 	/**
 	 * Each of these must have:
@@ -32,7 +34,16 @@ class JackalopeRelationship extends DataObject {
 
 		// @todo Add translations.
 		if (!$this->FieldName) {
+			// A relationship must have a name.
 			$validator->error('A field must have a name', self::JACKALOPEERROR_RELATIONSHIP_MISSINGNAME);
+		}
+		if (!$this->FieldType) {
+			// A relationship must associate to another class.
+			$validator->error('A relationship must associate to another class', self::JACKALOPEERROR_RELATIONSHIP_MISSINGFIELD);
+		}
+		if (!$this->Type) {
+			// A relationship must associate to another class.
+			$validator->error('A relationship have a type', self::JACKALOPEERROR_RELATIONSHIP_MISSINGTYPE);
 		}
 
 		return $validator;
