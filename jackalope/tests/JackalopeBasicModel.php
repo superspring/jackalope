@@ -53,6 +53,8 @@ class JackalopeBasicModel extends SapphireTest {
 	public function testCreateModel() {
 		// Ensure the database is ready.
 		$this->helperTestNoModel(FALSE);
+		// Use Jackalope's manifest.
+		$this->helperUseManifest();
 
 		// Add the class to the database.
 		$class = new JackalopeClassName();
@@ -72,13 +74,6 @@ class JackalopeBasicModel extends SapphireTest {
 			$dbfield->ClassID = $class->ID;
 			$dbfield->write();
 		}
-
-		// Use Jackalope's manifest.
-		$this->helperUseManifest();
-
-		// Run the build.
-		$_SERVER['HTTP_HOST'] = 'http://localhost/dev/build';
-		singleton('DatabaseAdmin')->doBuild();
 
 		// Initialise the class.
 		$this->assertTrue(class_exists(self::$className));

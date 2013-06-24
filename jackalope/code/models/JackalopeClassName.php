@@ -53,4 +53,20 @@ class JackalopeClassName extends DataObject {
 	public function onAfterWrite() {
 		JackalopeController::rebuild();
 	}
+
+	/**
+	 * Before this object is deleted, remove it's fields and table.
+	 */
+	public function onBeforeDelete() {
+		// Ensure all dependancies are deleted too.
+		foreach ($this->Fields() as $field) {
+			$field->delete();
+		}
+		foreach ($this->Relationships() as $relationship) {
+			$relationship->delete();
+		}
+
+		// Delete the table as a whole.
+		JackalopeController::deleteTable($this);
+	}
 }

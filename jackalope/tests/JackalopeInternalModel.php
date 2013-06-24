@@ -68,7 +68,7 @@ class JackalopeInternalModel extends SapphireTest {
 		foreach (self::$internalClasses as $class => $fields) {
 			foreach ($fields as $name => $type) {
 				$sql = sprintf(
-					'SELECT %s FROM `%s` LIMIT 1',
+					'SELECT %s FROM "%s" LIMIT 1',
 					Convert::raw2sql($name), Convert::raw2sql($class)
 				);
 				DB::query($sql);

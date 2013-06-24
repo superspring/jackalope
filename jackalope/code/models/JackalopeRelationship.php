@@ -117,4 +117,11 @@ class JackalopeRelationship extends DataObject {
 	public function onAfterWrite() {
 		JackalopeController::rebuild();
 	}
+
+	/**
+	 * Remove this field from the database.
+	 */
+	public function onAfterDelete() {
+		JackalopeController::deleteField($this->ClassID, $this->FieldName);
+	}
 }
