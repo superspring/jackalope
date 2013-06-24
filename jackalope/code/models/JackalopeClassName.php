@@ -23,8 +23,8 @@ class JackalopeClassName extends DataObject {
 		),
 	);
 
-	const JACKALOPEERROR_DUPLICATE_NAME = 5;
-	const JACKALOPEERROR_BAD_NAME = 6;
+	const JACKALOPEERROR_DUPLICATE_NAME = 'badname';
+	const JACKALOPEERROR_BAD_NAME = 'badname';
 
 	/**
 	 * Modify the configuration options to combine relationships with classes.

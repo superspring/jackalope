@@ -19,10 +19,10 @@ class JackalopeDBField extends DataObject {
 	/**
 	 * A list of potential validation errors.
 	 */
-	const JACKALOPEERROR_DBFIELD_NOARGS = 1;
-	const JACKALOPEERROR_DBFIELD_EXPECTLENGTH = 2;
-	const JACKALOPEERROR_DBFIELD_BADENUMFORMAT = 3;
-	const JACKALOPEERROR_DBFIELD_MISSINGNAME = 4;
+	const JACKALOPEERROR_DBFIELD_NOARGS = 'noargs';
+	const JACKALOPEERROR_DBFIELD_EXPECTLENGTH = 'badlength';
+	const JACKALOPEERROR_DBFIELD_BADENUMFORMAT = 'badnumber';
+	const JACKALOPEERROR_DBFIELD_MISSINGNAME = 'badname';
 
 	/**
 	 * Certain field types can have arguments.

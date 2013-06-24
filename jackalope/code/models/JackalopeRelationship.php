@@ -20,9 +20,9 @@ class JackalopeRelationship extends DataObject {
 	/**
 	 * A list of potential validation errors.
 	 */
-	const JACKALOPEERROR_RELATIONSHIP_MISSINGNAME = 6;
-	const JACKALOPEERROR_RELATIONSHIP_MISSINGTYPE = 7;
-	const JACKALOPEERROR_RELATIONSHIP_MISSINGFIELD = 8;
+	const JACKALOPEERROR_RELATIONSHIP_MISSINGNAME = 'missingname';
+	const JACKALOPEERROR_RELATIONSHIP_MISSINGTYPE = 'missingtype';
+	const JACKALOPEERROR_RELATIONSHIP_MISSINGFIELD = 'missingfield';
 
 	/**
 	 * Each of these must have:
