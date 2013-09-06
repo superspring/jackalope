@@ -7,3 +7,4 @@
 Config::inst()->update('Injector', 'RequestProcessor', 'JackalopeController');
 
 Object::add_extension('More', 'JackalopeExporter');
+Object::add_extension('More', 'JackalopeImporter');

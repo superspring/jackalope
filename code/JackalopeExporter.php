@@ -217,7 +217,8 @@ EOF;
 	protected function generateAdditionalCode($class) {
 		// Define the class.
 		$newclass = 'JackalopeVirtualClass_' . $class;
-		$code = sprintf("class %s extends DataExtension {\n", $newclass);
+		$code = sprintf("class %s extends DataExtension {\n" .
+				"\tpublic \$JACKALOPEVIRTUALCLASS = true;", $newclass);
 
 		// Get the variables associated with the class.
 		$variables = $this->getClassVariables($class);
