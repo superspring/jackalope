@@ -15,11 +15,21 @@ class JackalopeController extends RequestProcessor {
 
 	/**
 	 * Gets the database to rebuild itself.
+	 *
+	 * @param String $class
+	 *   The name of the class being rebuilt.
 	 */
-	public static function rebuild() {
+	public static function rebuild($class) {
+		// Do a generic rebuild for everything.
 		DataObject::reset();
 		SS_ClassLoader::instance()->getManifest()->regenerate();
 		singleton('DatabaseAdmin')->doBuild(TRUE, FALSE, FALSE);
+
+		// Specifically ensure that the new table exists.
+		if ($class) {
+			$sng = singleton($class);
+			$sng->requireTable();
+		}
 	}
 
 	/**
@@ -70,7 +80,7 @@ class JackalopeController extends RequestProcessor {
 
 		// Ensure the table isn't core.
 		if (!property_exists($table, 'JACKALOPEVIRTUALCLASS')) {
-			// This is a core class or from another module? Let it.
+			// This is a core class or from another module? Leave it.
 			return FALSE;
 		}
 

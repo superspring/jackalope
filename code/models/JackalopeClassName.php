@@ -43,7 +43,8 @@ class JackalopeClassName extends DataObject {
 			// Add the relationship fields.
 			'Relationships' => 'JackalopeRelationship',
 		) as $field => $class) {
-			$field = new ComplexTableField($this, $field, $class, array(), 'getPopupFields');
+			$config = GridFieldConfig_RelationEditor::create();
+			$field = new GridField($field, $field, $this->$field(), $config);
 			$fields->addFieldToTab('Root.Main', $field);
 		}
 
@@ -54,7 +55,7 @@ class JackalopeClassName extends DataObject {
 	 * After any class changes, update the database.
 	 */
 	public function onAfterWrite() {
-		JackalopeController::rebuild();
+		JackalopeController::rebuild($this->Name);
 	}
 
 	/**
@@ -69,8 +70,12 @@ class JackalopeClassName extends DataObject {
 			$relationship->delete();
 		}
 
-		// Delete the table as a whole.
-		JackalopeController::deleteTable($this);
+		// Unless it's a core table.
+		$class = $this->Name;
+		if (property_exists($class, 'JACKALOPEVIRTUALCLASS')) {
+			// Delete the table as a whole.
+			JackalopeController::deleteTable($this);
+		}
 	}
 
 	/**
@@ -81,9 +86,9 @@ class JackalopeClassName extends DataObject {
 
 		// @todo Add translations.
 		$other = JackalopeClassName::get('JackalopeClassName', sprintf(
-			"Name = '%s'", Convert::raw2sql($this->Name)
+			"Name = '%s' && ID != %d", Convert::raw2sql($this->Name), $this->ID
 		));
-		if ($other->count() !== 0) {
+		if ($other->count() != 0) {
 			// There are other ones? No.
 			$validator->error('There is already a class with this name', self::JACKALOPEERROR_DUPLICATE_NAME);
 		}
