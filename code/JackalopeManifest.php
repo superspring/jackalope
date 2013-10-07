@@ -40,9 +40,9 @@ class %s extends DataExtension {
 	public static $has_many = array();
 
 	/**
-	 * This takes all the static variables and returns them.
+	 * This gets all the static variables and returns them.
 	 */
-	public function extraStatics($class = null, $extension = null) {
+	public static function get_extra_config($class, $extension, $args) {
 		return array(
 			'db'                => self::$db,
 			'many_many'         => self::$many_many,

@@ -105,6 +105,8 @@ class JackalopeRelationship extends DataObject {
 	 * Updates the class models with the new field.
 	 */
 	public function onAfterWrite() {
+		parent::onAfterWrite();
+
 		JackalopeController::rebuild($this->Class()->Name);
 	}
 
@@ -112,6 +114,8 @@ class JackalopeRelationship extends DataObject {
 	 * Remove this field from the database.
 	 */
 	public function onAfterDelete() {
+		parent::onAfterDelete();
+
 		JackalopeController::deleteField($this->ClassID, $this->FieldName);
 	}
 }

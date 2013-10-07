@@ -77,7 +77,6 @@ class JackalopeDeleteModel extends SapphireTest {
 
 		// Ensure only the corret fields were added.
 		$className = self::$className;
-var_dump($className, $className::$db);
 		foreach ($className::$db as $name => $type) {
 			$this->assertTrue(array_key_exists($name, self::$fieldNames));
 		}
@@ -98,6 +97,14 @@ var_dump($className, $className::$db);
 			'SELECT 1 FROM "%s"',
 			Convert::raw2sql(self::$className)
 		);
-		$result = DB::query($sql);
+		try {
+			$result = DB::query($sql);
+			// This code should not be run.
+			$this->assertTrue(false);
+		}
+		catch (Exception $ex) {
+			// Expects code to get here.
+			$this->assertTrue(true);
+		}
 	}
 }

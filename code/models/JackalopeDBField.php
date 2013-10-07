@@ -23,6 +23,7 @@ class JackalopeDBField extends DataObject {
 	const JACKALOPEERROR_DBFIELD_EXPECTLENGTH = 'badlength';
 	const JACKALOPEERROR_DBFIELD_BADENUMFORMAT = 'badnumber';
 	const JACKALOPEERROR_DBFIELD_MISSINGNAME = 'badname';
+	const JACKALOPEERROR_DBFIELD_DUPLICATE = 'duplicate';
 
 	/**
 	 * Certain field types can have arguments.
@@ -84,6 +85,17 @@ class JackalopeDBField extends DataObject {
 			);
 		}
 
+		// Does this field already exist? Can't have duplicates.
+		$class = $this->Class();
+		foreach ($class->Fields() as $field) {
+			if ($field->FieldName == $this->FieldName && $field->ID != $this->ID) {
+				$validator->error(
+					sprintf("There is already a field named '%s'", $this->FieldName),
+					self::JACKALOPEERROR_DBFIELD_DUPLICATE
+				);
+			}
+		}
+
 		return $validator;
 	}
 
@@ -122,6 +134,8 @@ class JackalopeDBField extends DataObject {
 	 * Ensure that after a field is created it is updated immediately.
 	 */
 	public function onAfterWrite() {
+		parent::onAfterWrite();
+
 		JackalopeController::rebuild($this->Class()->Name);
 	}
 

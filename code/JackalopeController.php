@@ -3,8 +3,8 @@
  * Initialises the Jackalope manifest when the first controller is loaded.
  */
 class JackalopeController extends RequestProcessor {
-	public function preRequest() {
-		parent::preRequest();
+	public function preRequest(SS_HTTPRequest $request, Session $session, DataModel $model) {
+		parent::preRequest($request, $session, $model);
 
 		// Prepare variables.
 		global $manifest, $loader, $flush;
@@ -43,9 +43,6 @@ class JackalopeController extends RequestProcessor {
 	 *   (Optional) If true this skips the rebuild step.
 	 */
 	public static function deleteField($classid, $fieldname, $quick = false) {
-		// Rebuild the database to ensure the field is no longer referenced in classes.
-		self::rebuild();
-
 		// Which table are we addressing?
 		$class = JackalopeClassName::get_by_id('JackalopeClassName', $classid);
 		if (!$class) {
@@ -54,14 +51,22 @@ class JackalopeController extends RequestProcessor {
 		}
 		$table = $class->Name;
 
+		// Rebuild the database to ensure the field is no longer referenced in classes.
+		self::rebuild($table);
+
 		// Remove the field from the live model set.
-		if (array_key_exists($fieldname, $table::$db)) {
+		$refclass = new ReflectionClass($table);
+		$fields = array();
+		foreach ($refclass->getProperties(ReflectionProperty::IS_PUBLIC) as $field) {
+			$fields[] = $field->name;
+		}
+		if (in_array($fieldname, $fields)) {
 			unset($table::$db[$fieldname]);
 		}
 
 		// Silverstripe doesn't currently have any 'DROP Field' commands, so lets add one.
 		$sql = sprintf(
-			'ALTER TABLE %s DROP COLUMN %s',
+			'ALTER TABLE "%s" DROP COLUMN %s',
 			Convert::raw2sql($table), Convert::raw2sql($fieldname)
 		);
 		return DB::query($sql);
@@ -86,7 +91,7 @@ class JackalopeController extends RequestProcessor {
 
 		// Silverstripe doesn't currently have any 'DROP TABLE' commands, so lets add one.
 		$sql = sprintf(
-			'DROP TABLE %s',
+			'DROP TABLE "%s"',
 			Convert::raw2sql($table)
 		);
 		return DB::query($sql);
