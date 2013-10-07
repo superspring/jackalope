@@ -87,12 +87,52 @@ class JackalopeDBField extends DataObject {
 
 		// Does this field already exist? Can't have duplicates.
 		$class = $this->Class();
+		$thisfield = strtolower($this->FieldName);
+		$thisclass = strtolower($this->Class()->Name);
 		foreach ($class->Fields() as $field) {
-			if ($field->FieldName == $this->FieldName && $field->ID != $this->ID) {
+			// Make this case insensitive.
+			if (strtolower($field->FieldName) == $thisfield && $field->ID != $this->ID) {
 				$validator->error(
 					sprintf("There is already a field named '%s'", $this->FieldName),
 					self::JACKALOPEERROR_DBFIELD_DUPLICATE
 				);
+			}
+		}
+
+		// The name is different to one of the four primary fields?
+		$fields = array(
+			// Lowercased.
+			'id', 'classname', 'lastedited', 'created',
+		);
+		if (in_array($thisfield, $fields)) {
+			// This is a reserved field name. Don't use it.
+			$validator->error(
+				sprintf("You can't use the name '%s' for a field. Try another one", $this->FieldName),
+				self::JACKALOPEERROR_DBFIELD_DUPLICATE
+			);
+		}
+
+		// Is this field defined by another sub class? Can't add it again.
+		$classes = SS_ClassLoader::instance()->getManifest()->getDescendants();
+		// If there are subclasses, they'll be on this list.
+		if (array_key_exists($thisclass, $classes)) {
+			foreach ($classes[$thisclass] as $class) {
+				// Get the db and has_one fields from the class.
+				$fields = DataObject::custom_database_fields($class);
+
+				// Convert these to lower case.
+				$fields = array_map(function($str) {
+					return strtolower($str);
+				}, array_keys($fields));
+
+				// Is there overlap with any subclass?
+				if (in_array(strtolower($thisfield), $fields)) {
+					// It's already been defined? Can't duplicate it.
+					$validator->error(
+						sprintf("The '%s' field is already defined by the '%s' class.", $this->FieldName, $class),
+						self::JACKALOPEERROR_DBFIELD_DUPLICATE
+					);
+				}
 			}
 		}
 
@@ -143,6 +183,8 @@ class JackalopeDBField extends DataObject {
 	 * Remove this field from the database.
 	 */
 	public function onAfterDelete() {
+		parent::onAfterDelete();
+
 		JackalopeController::deleteField($this->ClassID, $this->FieldName);
 	}
 }

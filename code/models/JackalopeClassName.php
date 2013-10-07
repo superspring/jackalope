@@ -98,9 +98,9 @@ class JackalopeClassName extends DataObject {
 		}
 
 		// Ensure the characters are valid.
-		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $this->Name)) {
+		if (!preg_match('/^[a-zA-Z][a-zA-Z0-9]*$/', $this->Name)) {
 			// Invalid PHP class name.
-			$validator->error('Class name may only contain alphanumeric characters and underscores', self::JACKALOPEERROR_BAD_NAME);
+			$validator->error('Class name may only contain alphanumeric characters', self::JACKALOPEERROR_BAD_NAME);
 		}
 
 		return $validator;

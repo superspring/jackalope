@@ -23,6 +23,7 @@ class JackalopeRelationship extends DataObject {
 	const JACKALOPEERROR_RELATIONSHIP_MISSINGNAME = 'missingname';
 	const JACKALOPEERROR_RELATIONSHIP_MISSINGTYPE = 'missingtype';
 	const JACKALOPEERROR_RELATIONSHIP_MISSINGFIELD = 'missingfield';
+	const JACKALOPEERROR_RELATIONSHIP_DUPLICATEFIELD = 'duplicate';
 
 	/**
 	 * Each of these must have:
@@ -45,6 +46,22 @@ class JackalopeRelationship extends DataObject {
 			// A relationship must associate to another class.
 			$validator->error('A relationship have a type', self::JACKALOPEERROR_RELATIONSHIP_MISSINGTYPE);
 		}
+
+		// Does this field already exist? Can't have duplicates.
+		$class = $this->Class();
+		$thisfield = strtolower($this->FieldName);
+		$thisclass = strtolower($this->Class()->Name);
+		foreach ($class->Relationships() as $field) {
+			// Make this case insensitive.
+			if (strtolower($field->FieldName) == $thisfield && $field->ID != $this->ID) {
+				$validator->error(
+					sprintf("There is already a field named '%s'", $this->FieldName),
+					self::JACKALOPEERROR_RELATIONSHIP_DUPLICATEFIELD
+				);
+			}
+		}
+
+		// @todo Add in more validations for the other mix of bad names.
 
 		return $validator;
 	}
