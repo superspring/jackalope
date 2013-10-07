@@ -115,24 +115,24 @@ class JackalopeDBField extends DataObject {
 		// Is this field defined by another sub class? Can't add it again.
 		$classes = SS_ClassLoader::instance()->getManifest()->getDescendants();
 		// If there are subclasses, they'll be on this list.
-		if (array_key_exists($thisclass, $classes)) {
-			foreach ($classes[$thisclass] as $class) {
-				// Get the db and has_one fields from the class.
-				$fields = DataObject::custom_database_fields($class);
+		$otherclasses = array_key_exists($thisclass, $classes) ? $classes[$thisclass] : array();
+		$otherclasses[] = $this->Class()->Name;
+		foreach ($otherclasses as $class) {
+			// Get the db and has_one fields from the class.
+			$fields = DataObject::custom_database_fields($class);
 
-				// Convert these to lower case.
-				$fields = array_map(function($str) {
-					return strtolower($str);
-				}, array_keys($fields));
+			// Convert these to lower case.
+			$fields = array_map(function($str) {
+				return strtolower($str);
+			}, array_keys($fields));
 
-				// Is there overlap with any subclass?
-				if (in_array(strtolower($thisfield), $fields)) {
-					// It's already been defined? Can't duplicate it.
-					$validator->error(
-						sprintf("The '%s' field is already defined by the '%s' class.", $this->FieldName, $class),
-						self::JACKALOPEERROR_DBFIELD_DUPLICATE
-					);
-				}
+			// Is there overlap with any subclass?
+			if (in_array($thisfield, $fields)) {
+				// It's already been defined? Can't duplicate it.
+				$validator->error(
+					sprintf("The '%s' field is already defined by the '%s' class.", $this->FieldName, $class),
+					self::JACKALOPEERROR_DBFIELD_DUPLICATE
+				);
 			}
 		}
 
