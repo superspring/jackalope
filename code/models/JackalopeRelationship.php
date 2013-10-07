@@ -91,8 +91,14 @@ class JackalopeRelationship extends DataObject {
 	/**
 	 * Generates the code to reflect this relationship entry.
 	 */
-	public function getCode() {
-		return $this->quoteString($this->FieldName) . ' => ' . $this->quoteString($this->FieldType);
+	public function toCode() {
+		$type = $this->FieldType;
+		if ($this->FieldArgs) {
+			// Add the optional arguments.
+			$type .= '(' . $this->FieldArgs . ')';
+		}
+
+		return $this->quoteString($this->FieldName) . ' => ' . $this->quoteString($type);
 	}
 
 	/**

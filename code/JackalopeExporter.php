@@ -161,10 +161,9 @@ EOF;
 	 */
 	protected function getClassVariables($class) {
 		// Load the variables.
-		$classobj = JackalopeClassName::get_one(
-			'JackalopeClassName',
-			"Name = '" . Convert::raw2sql($class) . "'"
-		);
+		$classobj = JackalopeClassName::get()->filter(array(
+			'Name' => $class,
+		))->first();
 		$variables = array();
 
 		// Add the $db fields.
@@ -217,8 +216,11 @@ EOF;
 	protected function generateAdditionalCode($class) {
 		// Define the class.
 		$newclass = 'JackalopeVirtualClass_' . $class;
-		$code = sprintf("class %s extends DataExtension {\n" .
-				"\tpublic \$JACKALOPEVIRTUALCLASS = true;", $newclass);
+		$code = sprintf(
+			"class %s extends DataExtension {\n" .
+			"\tpublic \$JACKALOPEVIRTUALCLASS = true;\n",
+			$newclass
+		);
 
 		// Get the variables associated with the class.
 		$variables = $this->getClassVariables($class);

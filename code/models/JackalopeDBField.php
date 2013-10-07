@@ -116,7 +116,6 @@ class JackalopeDBField extends DataObject {
 		$classes = SS_ClassLoader::instance()->getManifest()->getDescendants();
 		// If there are subclasses, they'll be on this list.
 		$otherclasses = array_key_exists($thisclass, $classes) ? $classes[$thisclass] : array();
-		$otherclasses[] = $this->Class()->Name;
 		foreach ($otherclasses as $class) {
 			// Get the db and has_one fields from the class.
 			$fields = DataObject::custom_database_fields($class);
@@ -144,7 +143,13 @@ class JackalopeDBField extends DataObject {
 	 */
 	public function toCode() {
 		// 'abc' => 'Text',
-		return $this->quoteString($this->FieldName) . ' => ' . $this->quoteString($this->FieldType);
+		$type = $this->FieldType;
+		if ($this->FieldArgs) {
+			// Add the optional arguments.
+			$type .= '(' . $this->FieldArgs . ')';
+		}
+
+		return $this->quoteString($this->FieldName) . ' => ' . $this->quoteString($type);
 	}
 
 	/**
