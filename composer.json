@@ -1,18 +1,18 @@
 {
-    "name": "silverstripe/jackalope",
-    "type": "library",
-    "description": "Allows database modifications via the CMS.",
-    "keywords": ["jackalope", "database", "admin", "manifest", "sake", "sakemore", "sake more", "silverstripe"],
-    "license": "GPL",
-    "authors": [
-        {
-            "name": "Timothy Best",
-            "email": "superspring@gmail.com",
-            "role": "Developer"
-        }
-    ],
-    "homepage": "https://github.com/superspring/jackalope",
-    "require": {
-        "php": ">5.1.0"
-    }
+	"name": "silverstripe/jackalope",
+	"description": "Allows dataobjects to be modified via the CMS.",
+	"type": "silverstripe-module"
+	"keywords": ["jackalope", "database", "manifest", "sakemore", "dataobject", "tables", "build"],
+	"license": "BSD-3-Clause"
+	"authors": [
+		{
+			"name": "Timothy Best",
+			"email": "superspring@gmail.com",
+			"role": "Developer"
+		}
+	],
+	"homepage": "https://github.com/superspring/jackalope",
+	"require": {
+		"silverstripe/framework": "~3.0"
+	}
 }
