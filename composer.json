@@ -1,9 +1,9 @@
 {
 	"name": "silverstripe/jackalope",
 	"description": "Allows dataobjects to be modified via the CMS.",
-	"type": "silverstripe-module"
+	"type": "silverstripe-module",
 	"keywords": ["jackalope", "database", "manifest", "sakemore", "dataobject", "tables", "build"],
-	"license": "BSD-3-Clause"
+	"license": "BSD-3-Clause",
 	"authors": [
 		{
 			"name": "Timothy Best",
