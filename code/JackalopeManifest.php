@@ -114,6 +114,13 @@ EOF;
 		$classes = JackalopeClassName::get('JackalopeClassName');
 		$results = array();
 
+		// Ensure the table exists before attempting to run anything.
+		$exists = DB::getConn()->hasTable('JackalopeClassName');
+		if (!$exists) {
+			// No data to play with?
+			return $results;
+		}
+
 		if ($classes->Count() > 0) {
 			foreach ($classes as $class) {
 				// Prepare variables.
