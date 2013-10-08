@@ -89,8 +89,10 @@ class JackalopeClassName extends DataObject {
 		$validator = parent::validate();
 
 		// @todo Add translations.
-		$other = JackalopeClassName::get('JackalopeClassName', sprintf(
-			"Name = '%s' && ID != %d", Convert::raw2sql($this->Name), $this->ID
+		$other = JackalopeClassName::get()->filter(array(
+			'Name' => $this->Name,
+		))->exclude(array(
+			'ID'   => $this->ID,
 		));
 		if ($other->count() != 0) {
 			// There are other ones? No.
