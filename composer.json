@@ -1,6 +1,8 @@
 {
 	"name": "superspring/jackalope",
-	"replace": "silverstripe/jackalope",
+	"replace": {
+		"silverstripe/jackalope": "*"
+	},
 	"description": "Allows dataobjects to be modified via the CMS.",
 	"type": "silverstripe-module",
 	"keywords": ["jackalope", "database", "manifest", "sakemore", "dataobject", "tables", "build", "cck", "content", "construction", "construct"],
