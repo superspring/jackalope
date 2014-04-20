@@ -89,6 +89,12 @@ class JackalopeController extends RequestProcessor {
 			return FALSE;
 		}
 
+		// Ensure the table already exists.
+		if (!DB::getConn()->hasTable($table)) {
+			// The table never existed? So it's gone now.
+			return TRUE;
+		}
+
 		// Silverstripe doesn't currently have any 'DROP TABLE' commands, so lets add one.
 		$sql = sprintf(
 			'DROP TABLE "%s"',
