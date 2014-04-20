@@ -6,7 +6,7 @@ class JackalopeManifest extends SS_ClassManifest {
 	const DATABSECLASSMODEL_PATH = '../jackalope/code/models/JackalopeDummyClass.php';
 
 	const GENERICCLASS_CODE = <<<'EOF'
-class %s extends DataObject {
+class %s extends %s {
 	// This is used to distinguish between real classes and virtual classes.
 	public $JACKALOPEVIRTUALCLASS = true;
 
@@ -133,8 +133,14 @@ EOF;
 			foreach ($classes as $class) {
 				// Prepare variables.
 				$results[$class->Name] = array(
+					'extends' => $class->Extends,
 					'db' => array(),
 				);
+
+				// Is it extending something?
+				if ($class->Extends == '' || !class_exists($class->Extends)) {
+					$results[$class->Name]['extends'] = 'DataObject';
+				}
 
 				// Add all the fields.
 				foreach ($class->Fields() as $field) {
@@ -189,8 +195,10 @@ EOF;
 		}
 		// Class doesn't exist? Create it.
 		if (!class_exists($class)) {
+			// Get the parent.
+			$extends = $definition['extends'];
 			// Define the class.
-			$createcode = sprintf(self::GENERICCLASS_CODE, $class);
+			$createcode = sprintf(self::GENERICCLASS_CODE, $class, $extends);
 			// @todo Find another way of achieving this.
 			eval($createcode);
 
@@ -242,12 +250,14 @@ EOF;
 
 		// Add data to the class.
 		foreach ($definition as $var_name => $var_value) {
-			$fields = (!array_key_exists($var_name, $allfields) || !is_array($allfields[$var_name]))
-				  ? array() : $allfields[$var_name];
-			$class::$$var_name = $this->mergeField($fields, $var_value);
+			if ($var_name != 'extends') {
+				$fields = (!array_key_exists($var_name, $allfields) || !is_array($allfields[$var_name]))
+					  ? array() : $allfields[$var_name];
+				$class::$$var_name = $this->mergeField($fields, $var_value);
 
-			// Ensure the data is stored in the configuration.
-			Config::inst()->update($cacheclass, $var_name, $class::$$var_name);
+				// Ensure the data is stored in the configuration.
+				Config::inst()->update($cacheclass, $var_name, $class::$$var_name);
+			}
 		}
 	}
 
