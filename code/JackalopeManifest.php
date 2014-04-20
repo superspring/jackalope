@@ -121,6 +121,14 @@ EOF;
 			return $results;
 		}
 
+		// Ensure teh table has all it's columns before starting.
+		foreach (JackalopeClassName::$db as $field => $type) {
+			if (!DB::getConn()->hasField('JackalopeClassName', $field)) {
+				// We're missing a field? Do nothing then.
+				return $results;
+			}
+		}
+
 		if ($classes->Count() > 0) {
 			foreach ($classes as $class) {
 				// Prepare variables.

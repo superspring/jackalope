@@ -4,7 +4,8 @@
  */
 class JackalopeClassName extends DataObject {
 	static $db = array(
-		'Name' => 'Varchar',
+		'Name'    => 'Varchar',
+		'Extends' => 'Varchar',
 	);
 	static $has_many = array(
 		'Fields'        => 'JackalopeDBField',
